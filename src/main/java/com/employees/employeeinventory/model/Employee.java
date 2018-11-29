@@ -16,9 +16,11 @@ public class Employee implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @NotBlank(message = "First name may not be empty")
     @Column(name = "first_name")
     private String first_name;
 
+    @NotBlank(message = "Last name may not be empty")
     @Column(name = "last_name")
     private String last_name;
 
