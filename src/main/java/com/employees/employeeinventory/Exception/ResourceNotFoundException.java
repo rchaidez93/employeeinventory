@@ -1,4 +1,4 @@
-package com.employees.employeeinventory.exception;
+package com.employees.employeeinventory.Exception;
 
 public class ResourceNotFoundException extends RuntimeException{
 

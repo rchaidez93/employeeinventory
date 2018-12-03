@@ -1,6 +1,5 @@
-package com.employees.employeeinventory.model;
+package com.employees.employeeinventory.Model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -27,7 +26,7 @@ public class Employee implements Serializable {
     @Column(name = "dob")
     private String dob;
 
-    @Column(name = "ssn")
+    @Column(name = "ssn",nullable = false)
     private int ssn;
 
     @Column(name = "start_date")

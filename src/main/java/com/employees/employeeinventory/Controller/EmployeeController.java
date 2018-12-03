@@ -2,23 +2,17 @@ package com.employees.employeeinventory.Controller;
 
 
 import com.employees.employeeinventory.Repository.EmployeeRepository;
-import com.employees.employeeinventory.exception.InvalidEmployeeException;
-import com.employees.employeeinventory.exception.ResourceNotFoundException;
-import com.employees.employeeinventory.model.Employee;
-import com.employees.employeeinventory.service.EmployeeService;
+import com.employees.employeeinventory.Exception.InvalidEmployeeException;
+import com.employees.employeeinventory.Exception.ResourceNotFoundException;
+import com.employees.employeeinventory.Model.Employee;
+import com.employees.employeeinventory.Utils.EmployeeValidations;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.ResourceAccessException;
 
 import javax.validation.Valid;
-import javax.xml.ws.Response;
 import java.util.List;
 
 
@@ -39,12 +33,9 @@ public class EmployeeController {
     //add a new employee
     @PostMapping("/add_employee")
     public Employee createEmployee(@Valid @RequestBody Employee employee){
-
+        EmployeeValidations employeeValidations = new EmployeeValidations();
         //Make sure someone is not adding new user with ssn that already exists
-        EmployeeService employeeService = new EmployeeService();
-        boolean uniqueEmployee = employeeService.checkEmployeeSSN(employeeRepository.findAll(),employee.getSsn());
-        if(!uniqueEmployee)
-            throw new InvalidEmployeeException(employee.getId(),"SSN already exists");
+        employeeValidations.checkEmployeeSSN(employeeRepository.findAll(),employee.getSsn());
 
         return employeeRepository.save(employee);
     }
@@ -63,6 +54,8 @@ public class EmployeeController {
 
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(()-> new ResourceNotFoundException(id,"Sorry the employee id : "+ id +" was not found"));
+        EmployeeValidations employeeValidations = new EmployeeValidations();
+        employeeValidations.checkEmployeeSSN(employeeRepository.findAll(),employee.getSsn());
 
         employee.setFirst_name(employeeInfo.getFirst_name());
         employee.setLast_name(employeeInfo.getLast_name());

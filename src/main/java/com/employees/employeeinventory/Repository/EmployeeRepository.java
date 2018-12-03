@@ -1,6 +1,6 @@
 package com.employees.employeeinventory.Repository;
 
-import com.employees.employeeinventory.model.Employee;
+import com.employees.employeeinventory.Model.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

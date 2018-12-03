@@ -1,9 +1,19 @@
-package com.employees.employeeinventory.exception;
+package com.employees.employeeinventory.Exception;
+
+import java.util.List;
 
 public class ExceptionResponse {
 
     private String errorCode;
-    private String errorMessage;
+    private List<String> errors;
+
+    public List<String> getErrors() {
+        return errors;
+    }
+
+    public void setErrors(List<String> errors) {
+        this.errors = errors;
+    }
 
     public ExceptionResponse() {
     }
@@ -16,12 +26,6 @@ public class ExceptionResponse {
         this.errorCode = errorCode;
     }
 
-    public String getErrorMessage() {
-        return errorMessage;
-    }
 
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
 
 }
