@@ -1,9 +1,13 @@
 package com.employees.employeeinventory.Model;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 
 @Entity
@@ -24,15 +28,20 @@ public class Employee implements Serializable {
     private String last_name;
 
     @Column(name = "dob")
+    @NotBlank(message =  "Date of birth may not be empty")
+    @Pattern(regexp = "^\\d{1,2}\\/\\d{1,2}\\/\\d{4}$",message = "Date of birth must be in dd/mm/yyyy format")
     private String dob;
 
     @Column(name = "ssn",nullable = false)
     private int ssn;
 
     @Column(name = "start_date")
+    @NotBlank(message = "Start date may not be null")
+    @Pattern(regexp = "^\\d{1,2}\\/\\d{1,2}\\/\\d{4}$",message = "Start date must be in dd/mm/yyyy format")
     private String start_date;
 
     @Column(name = "salary")
+    @Min(value = 0,message = "Salary cannot be a negative number")
     private int salary;
 
 

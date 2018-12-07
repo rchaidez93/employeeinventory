@@ -5,10 +5,12 @@ import com.employees.employeeinventory.Repository.EmployeeRepository;
 import com.employees.employeeinventory.Exception.InvalidEmployeeException;
 import com.employees.employeeinventory.Exception.ResourceNotFoundException;
 import com.employees.employeeinventory.Model.Employee;
+import com.employees.employeeinventory.Utils.DateValidator;
 import com.employees.employeeinventory.Utils.EmployeeValidations;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,12 +34,12 @@ public class EmployeeController {
 
     //add a new employee
     @PostMapping("/add_employee")
-    public Employee createEmployee(@Valid @RequestBody Employee employee){
+    public ResponseEntity<?> createEmployee(@Valid @RequestBody Employee employee){
         EmployeeValidations employeeValidations = new EmployeeValidations();
-        //Make sure someone is not adding new user with ssn that already exists
-        employeeValidations.checkEmployeeSSN(employeeRepository.findAll(),employee.getSsn());
-
-        return employeeRepository.save(employee);
+        //Validate new employee information
+        employeeValidations.checkEmployeeInfo(employeeRepository.findAll(),employee);
+        employeeRepository.save(employee);
+        return new ResponseEntity<>("Employee was added successfully!", HttpStatus.OK);
     }
 
     //get employee by id
@@ -50,12 +52,10 @@ public class EmployeeController {
 
     //update existing employee
     @PutMapping("/update_employee/{id}")
-    public Employee updateEmployeeById(@PathVariable(value = "id") Integer id,@Valid @RequestBody Employee employeeInfo){
+    public ResponseEntity<?> updateEmployeeById(@PathVariable(value = "id") Integer id,@Valid @RequestBody Employee employeeInfo){
 
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(()-> new ResourceNotFoundException(id,"Sorry the employee id : "+ id +" was not found"));
-        EmployeeValidations employeeValidations = new EmployeeValidations();
-        employeeValidations.checkEmployeeSSN(employeeRepository.findAll(),employee.getSsn());
 
         employee.setFirst_name(employeeInfo.getFirst_name());
         employee.setLast_name(employeeInfo.getLast_name());
@@ -66,7 +66,8 @@ public class EmployeeController {
 
         Employee updateEmployee = employeeRepository.save(employee);
 
-        return updateEmployee;
+
+        return new ResponseEntity<>("Employee was updated successfully!", HttpStatus.OK);
     }
 
     //remove employee
@@ -78,7 +79,7 @@ public class EmployeeController {
 
         employeeRepository.delete(employee);
 
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>("Employee deleted successfully",HttpStatus.OK);
     }
 
 
