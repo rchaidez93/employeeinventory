@@ -1,19 +1,20 @@
 package com.employees.employeeinventory.Model;
 
+import lombok.Data;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
+@Data
 @Table(name = "employee_pay_roll")
 @EntityListeners(AuditingEntityListener.class)
 public class Employee implements Serializable {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,63 +45,17 @@ public class Employee implements Serializable {
     @Min(value = 0,message = "Salary cannot be a negative number")
     private int salary;
 
+    @Min(value = 0, message = "Supervisor can only be a 0 for no and 1 for yes")
+    @Max(value = 1, message = "Supervisor can only be a 0 for no and 1 for yes")
+    private int supervisor;
 
-    public int getId() {
-        return id;
-    }
+    private int supervisor_id;
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    @Transient
+    private List<Employee> supervising;
 
-    public String getFirst_name() {
-        return first_name;
-    }
-
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
-    }
-
-    public String getLast_name() {
-        return last_name;
-    }
-
-    public void setLast_name(String last_name) {
-        this.last_name = last_name;
-    }
-
-    public String getDob() {
-        return dob;
-    }
-
-    public void setDob(String dob) {
-        this.dob = dob;
-    }
-
-    public int getSsn() {
-        return ssn;
-    }
-
-    public void setSsn(int ssn) {
-        this.ssn = ssn;
-    }
-
-    public String getStart_date() {
-        return start_date;
-    }
-
-    public void setStart_date(String start_date) {
-        this.start_date = start_date;
-    }
-
-    public int getSalary() {
-        return salary;
-    }
-
-    public void setSalary(int salary) {
-        this.salary = salary;
-    }
-
+    @Transient
+    private List<Employee> employee_supervisor;
 
 
 }

@@ -7,6 +7,8 @@ import com.employees.employeeinventory.Exception.ResourceNotFoundException;
 import com.employees.employeeinventory.Model.Employee;
 import com.employees.employeeinventory.Utils.DateValidator;
 import com.employees.employeeinventory.Utils.EmployeeValidations;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -28,8 +32,52 @@ public class EmployeeController {
 
     //get all employee information
     @GetMapping("/get_all_employees")
-    public List<Employee> getAllEmployees(){
-        return employeeRepository.findAll();
+    public String getAllEmployees(){
+
+        Gson gsonBuilder = new GsonBuilder().create();
+
+//        final List<Employee> employeeList = new ArrayList<>();
+        List<Employee> all_employees = employeeRepository.findAll();
+
+        all_employees.forEach(employee -> {
+            List<Employee> employeeList = new ArrayList<>();
+            List<Employee> employeeList2 = new ArrayList<>();
+            if(employee.getSupervisor() == 1){
+                //get supervised employees
+
+                employeeList = all_employees
+                        .stream()
+                        .filter(employee1 -> employee1.getSupervisor_id() == employee.getSupervisor_id() && employee1.getSupervisor() == 0)
+                        .collect(Collectors.toList());
+                logger.info("first");
+                System.out.println(employeeList);
+                logger.info("next");
+//
+                employee.setSupervising(employeeList);
+
+            }
+            else{
+                logger.info("not super");
+                //get employee supervisor
+                employeeList2 = all_employees
+                        .stream()
+                        .filter(employee2 -> employee2.getSupervisor_id() == employee.getSupervisor_id() && employee2.getSupervisor() == 1)
+                        .collect(Collectors.toList());
+
+                employee.setEmployee_supervisor(employeeList2);
+
+                logger.info("end of not super");
+
+            }
+
+
+        });
+        System.out.println(all_employees);
+        String jsonFromJavaArray = gsonBuilder.toJson(all_employees);
+//        System.out.println(jsonFromJavaArray);
+
+
+        return jsonFromJavaArray;
     }
 
     //add a new employee
