@@ -52,9 +52,11 @@ public class Employee implements Serializable {
 
     private int supervisor_id;
 
+    /*TODO : Collections.emptyList()*/
     @Transient
     private List<Supervising> supervising;
 
+    /*TODO : Collections.emptyList()*/
     @Transient
     private List<Supervisor> employee_supervisor;
 
