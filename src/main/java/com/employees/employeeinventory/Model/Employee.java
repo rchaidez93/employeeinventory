@@ -8,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Entity
 @Data
@@ -52,10 +53,45 @@ public class Employee implements Serializable {
     private int supervisor_id;
 
     @Transient
-    private List<Employee> supervising;
+    private List<Supervising> supervising;
 
     @Transient
-    private List<Employee> employee_supervisor;
+    private List<Supervisor> employee_supervisor;
+
+    @Override
+    public String toString() {
+        String full_employee_list = "Employee{" +
+                "id=" + id +
+                ", first_name='" + first_name + '\'' +
+                ", last_name='" + last_name + '\'' +
+                ", dob='" + dob + '\'' +
+                ", ssn=" + ssn +
+                ", start_date='" + start_date + '\'' +
+                ", salary=" + salary +
+                ", supervisor=" + supervisor +
+                ", supervisor_id=" + supervisor_id;
+//                '}';
+        try{
+            full_employee_list += (supervising.size() > 0) ? ",Supervising[" : "";
+            for(Supervising supervising : supervising){
+                full_employee_list += "{" + supervising.toString() + "}";
+            }
+            full_employee_list += "]}";
+        }catch (NullPointerException np){
+            System.out.println(np);
+        }
+
+        try{
+            full_employee_list += (employee_supervisor.size() > 0) ? ",Supervisor[" : "";
+            for(Supervisor supervisor : employee_supervisor){
+                full_employee_list += "{" + supervisor.toString() + "}";
+            }
+            full_employee_list += "]}";
+        }catch(NullPointerException np){
+            System.out.println(np);
+        }
 
 
+        return full_employee_list;
+    }
 }
