@@ -31,4 +31,8 @@ public class EmployeeValidations {
 
         }
     }
+
+    public void checkEmployeeIdExist(List<Employee> employee, Integer employee_id){
+
+    }
 }

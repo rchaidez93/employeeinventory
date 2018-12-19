@@ -1,6 +1,7 @@
 package com.employees.employeeinventory.Model;
 
 import lombok.Data;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -46,54 +47,13 @@ public class Employee implements Serializable {
     @Min(value = 0,message = "Salary cannot be a negative number")
     private int salary;
 
+    @Column(name = "supervisor")
     @Min(value = 0, message = "Supervisor can only be a 0 for no and 1 for yes")
     @Max(value = 1, message = "Supervisor can only be a 0 for no and 1 for yes")
     private int supervisor;
 
+    @Column(name = "supervisor_id")
     private int supervisor_id;
 
-    /*TODO : Collections.emptyList()*/
-    @Transient
-    private List<Supervising> supervising;
 
-    /*TODO : Collections.emptyList()*/
-    @Transient
-    private List<Supervisor> employee_supervisor;
-
-    @Override
-    public String toString() {
-        String full_employee_list = "Employee{" +
-                "id=" + id +
-                ", first_name='" + first_name + '\'' +
-                ", last_name='" + last_name + '\'' +
-                ", dob='" + dob + '\'' +
-                ", ssn=" + ssn +
-                ", start_date='" + start_date + '\'' +
-                ", salary=" + salary +
-                ", supervisor=" + supervisor +
-                ", supervisor_id=" + supervisor_id;
-//                '}';
-        try{
-            full_employee_list += (supervising.size() > 0) ? ",Supervising[" : "";
-            for(Supervising supervising : supervising){
-                full_employee_list += "{" + supervising.toString() + "}";
-            }
-            full_employee_list += "]}";
-        }catch (NullPointerException np){
-            System.out.println(np);
-        }
-
-        try{
-            full_employee_list += (employee_supervisor.size() > 0) ? ",Supervisor[" : "";
-            for(Supervisor supervisor : employee_supervisor){
-                full_employee_list += "{" + supervisor.toString() + "}";
-            }
-            full_employee_list += "]}";
-        }catch(NullPointerException np){
-            System.out.println(np);
-        }
-
-
-        return full_employee_list;
-    }
 }
