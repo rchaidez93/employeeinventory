@@ -13,6 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
 
@@ -29,6 +30,8 @@ public class EmployeeinventoryApplicationTests {
 		List<EmployeePayRollRecord> employees = employeeTest.searchByName("amber");
 		assertNotNull(employees);
 		assertTrue(!employees.isEmpty());
+
+		assertEquals("amber",employees.get(0).getFirstName());
 
 		for(EmployeePayRollRecord employeePayRollRecord : employees){
 			System.err.println(employeePayRollRecord);
@@ -57,7 +60,7 @@ public class EmployeeinventoryApplicationTests {
 
 	}
 
-	@Test
+	@Test(expected = InvalidEmployeeException.class)
 	public void add_new_employee(){
 		Employee employee = new Employee();
 		employee.setFirst_name("unit");
