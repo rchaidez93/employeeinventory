@@ -65,7 +65,6 @@ public class AuthRestAPI {
 
         // Creating user's account
         User user = new User(signUpRequest.getUsername(),encoder.encode(signUpRequest.getPassword()));
-        System.out.println(user.toString());
 
         Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
@@ -73,8 +72,6 @@ public class AuthRestAPI {
 
 
         strRoles.forEach(role -> {
-            logger.info("in foreach");
-            System.out.println(role);
             switch(role) {
                 case "admin":
                     Role adminRole = roleServices.findByName(RoleName.ROLE_ADMIN)

@@ -3,21 +3,17 @@ package com.employees.employeeinventory.Controller;
 import com.employees.employeeinventory.Model.Role;
 import com.employees.employeeinventory.Model.RoleName;
 import com.employees.employeeinventory.Model.User;
-import com.employees.employeeinventory.Model.User_Role;
-import com.employees.tables.records.RoleRecord;
 import com.employees.tables.records.UserRecord;
 import com.employees.tables.records.UserRolesRecord;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jooq.DSLContext;
-import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
-import java.util.stream.Collector;
 
 import static com.employees.Tables.USER;
 import static com.employees.Tables.USER_ROLES;
@@ -94,35 +90,44 @@ public class UserServices {
 
     public void saveUser(User user) {
 
-
         logger.info("in saveUser");
-        System.out.println(user.getUsername());
-        System.out.println(user.getPassword());
-        System.out.println(user.getId());
 
         List<UserRecord> allRecords = dslContext
                 .select()
                 .from(USER)
                 .fetchInto(UserRecord.class);
-        System.out.println(allRecords);
+
 
         Long user_record_size = Long.valueOf(allRecords.size());
-        System.out.println(user_record_size);
 
         //insert row to users table
         UserRecord userRecord = dslContext.newRecord(USER);
+        Long last_insert_id = allRecords.get(Math.toIntExact(user_record_size) - 1).getId();
         if(user_record_size < 1){
             userRecord.setId(1L);
         }
         else{
-            Long last_insert_id = allRecords.get(Math.toIntExact(user_record_size) - 1).getId();
             userRecord.setId(last_insert_id+1);
         }
         userRecord.setUsername(user.getUsername());
         userRecord.setPassword(user.getPassword());
         userRecord.store();
 
-//        TODO : add entry to user role table. Issue : Constaint "constraint" foreign key (user_id) references `user`(id)
+        //get all roles assigned to user and insert to user_roles table
+        Set<Role> userRoles = user.getRoles();
+        for(Iterator<Role> iterator = userRoles.iterator(); iterator.hasNext();)
+        {
+
+            Role role = iterator.next();
+            Long roleId = role.getId();
+
+            dslContext.insertInto(USER_ROLES,
+                    USER_ROLES.USER_ID,USER_ROLES.ROLE_ID)
+                    .values(last_insert_id+1,roleId)
+                    .execute();
+        }
+
+
 
 
     }
